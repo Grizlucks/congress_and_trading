@@ -51,11 +51,14 @@ def scrape_congress_page(webpage: str) -> pd.DataFrame:
         ben_district.string = "3"
         info_soup.insert(235, ben_district)
         info_soup.insert(238, ben_district)
-
-    roger_district = soup.new_tag("span")
-    roger_district.string = "1"
-    info_soup.insert(307, roger_district)
-    info_soup.insert(310, roger_district)
+    if (
+        webpage
+        == "https://www.congress.gov/members?q=%7B%22chamber%22%3A%22House%22%2C%22congress%22%3A%5B%22116%22%2C%22117%22%5D%7D&pageSize=250&page=2"
+    ):
+        roger_district = soup.new_tag("span")
+        roger_district.string = "1"
+        info_soup.insert(307, roger_district)
+        info_soup.insert(310, roger_district)
 
     infos = [info.text for info in info_soup]
     infos = [infos[x : x + 3] for x in range(0, len(infos), 3)]
