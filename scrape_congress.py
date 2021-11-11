@@ -1,7 +1,7 @@
 import bs4
 import requests
-import numpy as np
 import pandas as pd
+import numpy as np
 
 
 def scrape_congress_page(webpage: str) -> pd.DataFrame:
@@ -22,7 +22,10 @@ def scrape_congress_page(webpage: str) -> pd.DataFrame:
     name_soup = soup.find_all("a", href=lambda x: x and x.startswith("/member/"))
 
     # strip the word "Representative" from each name
-    names = [name.text[15:] for name in name_soup]
+    names = [
+        name.text.replace("Representative ", "").replace("Senator ", "")
+        for name in name_soup
+    ]
 
     # ignore non-congressmen identifiers
     page_directions = [
@@ -38,6 +41,14 @@ def scrape_congress_page(webpage: str) -> pd.DataFrame:
     info_soup = soup.find_all(
         "span", text=lambda x: x and x not in page_directions, id=False, class_=False
     )
+
+    # adding outlier who is missing his District
+    ben_district = soup.new_tag("span")
+    ben_district.string = "3"
+    ben_district
+    info_soup.insert(235, ben_district)
+    info_soup.insert(238, ben_district)
+
     infos = [info.text for info in info_soup]
     infos = [infos[x : x + 3] for x in range(0, len(infos), 3)]
     served_soup = soup.find_all("ul", class_="member-served")
