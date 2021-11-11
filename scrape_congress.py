@@ -1,5 +1,6 @@
 import bs4
 import requests
+import numpy as np
 import pandas as pd
 
 
@@ -48,9 +49,14 @@ def scrape_congress_page(webpage: str) -> pd.DataFrame:
     for i in range(len(names)):
         house_member = {}
         house_member["name"] = names[i]
-        house_member["state"] = infos[i][0]
-        house_member["district"] = infos[i][1]
-        house_member["party"] = infos[i][2]
+        try:
+            house_member["state"] = infos[i][0]
+            house_member["district"] = infos[i][1]
+            house_member["party"] = infos[i][2]
+        except:
+            house_member["state"] = np.nan
+            house_member["district"] = np.nan
+            house_member["party"] = np.nan
         house_member["served"] = served[i]
 
         congress_members.append(house_member)
