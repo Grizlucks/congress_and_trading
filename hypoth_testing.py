@@ -29,7 +29,7 @@ def tvd(data, col, group_on) -> float:
         .sum()
         / 2
     )
-    return
+    return tvd
 
 
 def permutation_test(data, col, group_on, test_stat, n=1000) -> tuple:
